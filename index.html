@@ -1,1 +1,530 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amatör Telsiz Eğitim Topluluğu</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { 
+                        brand: {
+                            blue: '#2563eb',     
+                            hover: '#1d4ed8',    
+                            light: '#eff6ff',    
+                            dark: '#1e3a8a'      
+                        },
+                        dark: {
+                            bg: '#0f172a',       
+                            card: '#1e293b',     
+                            text: '#f8fafc',     
+                            muted: '#94a3b8',    
+                            border: '#334155'    
+                        },
+                        light: {
+                            bg: '#f8fafc',       
+                            card: '#ffffff',     
+                            text: '#0f172a',     
+                            muted: '#64748b',    
+                            border: '#e2e8f0'    
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'dark': '0 10px 40px -10px rgba(0,0,0,0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { transition-property: background-color, border-color, color, fill, stroke; transition-duration: 300ms; }
+        body { @apply bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text; }
+        
+        .swiper-slide { background-position: center; background-size: cover; }
+        
+        /* Genel Slider Butonları */
+        .swiper-button-next, .swiper-button-prev { 
+            @apply text-white bg-dark-bg/40 dark:bg-black/50 w-12 h-12 rounded-full backdrop-blur-sm transition-all duration-300;
+        }
+        .swiper-button-next:hover, .swiper-button-prev:hover { @apply bg-brand-blue scale-110; }
+        .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px !important; font-weight: bold; }
+        .swiper-pagination-bullet { @apply bg-white/60 w-2.5 h-2.5; }
+        .swiper-pagination-bullet-active { @apply bg-brand-blue w-6 rounded-md; }
+
+        /* Yeni Galeri Slider CSS'i */
+        .gallery-thumbs .swiper-slide { @apply opacity-50 cursor-pointer transition-all duration-300 border-2 border-transparent; }
+        .gallery-thumbs .swiper-slide-thumb-active { @apply opacity-100 border-brand-blue; }
+        .gallery-slider .swiper-button-next, .gallery-slider .swiper-button-prev { @apply w-10 h-10 bg-black/40 hover:bg-brand-blue; }
+        .gallery-slider .swiper-button-next:after, .gallery-slider .swiper-button-prev:after { font-size: 14px !important; }
+
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        
+        .timeline-line { @apply before:bg-brand-blue/20 dark:before:bg-brand-blue/30; }
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen relative">
+
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-brand-blue z-[60] w-0 transition-all duration-75"></div>
+
+    <nav class="fixed w-full z-50 transition-all duration-300 border-b border-light-border dark:border-dark-border bg-white/80 dark:bg-dark-bg/80 backdrop-blur-lg" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-blue/30">
+                    <i class="fas fa-tower-broadcast text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xl tracking-tight text-light-text dark:text-white leading-none">AT<span class="text-brand-blue">EG</span></span>
+                    <span class="text-[10px] uppercase tracking-wider text-light-muted dark:text-dark-muted font-semibold">Amatör Telsiz Eğitim Topluluğu</span>
+                </div>
+            </div>
+
+            <div class="hidden lg:flex gap-8 font-medium text-sm text-light-text dark:text-dark-text">
+                <a href="#hakkimizda" class="hover:text-brand-blue dark:hover:text-brand-blue transition-colors">Hakkımızda</a>
+                <a href="#faaliyetler" class="hover:text-brand-blue dark:hover:text-brand-blue transition-colors">Faaliyetlerimiz</a>
+                <a href="#surec" class="hover:text-brand-blue dark:hover:text-brand-blue transition-colors">Eğitim Süreci</a>
+                <a href="#galeri" class="hover:text-brand-blue dark:hover:text-brand-blue transition-colors">Anılarımız</a>
+                <a href="#sss" class="hover:text-brand-blue dark:hover:text-brand-blue transition-colors">SSS</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center text-light-muted dark:text-dark-muted hover:bg-light-border dark:hover:bg-dark-border transition-colors outline-none focus:outline-none">
+                    <i id="theme-toggle-dark-icon" class="fas fa-moon text-lg hidden"></i>
+                    <i id="theme-toggle-light-icon" class="fas fa-sun text-lg hidden"></i>
+                </button>
+
+                <a href="https://instagram.com/ateg_egitim" target="_blank" class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand-blue text-white font-medium hover:bg-brand-hover transition-colors shadow-lg shadow-brand-blue/30">
+                    <i class="fab fa-instagram text-lg"></i>
+                    <span class="hidden sm:inline">Bize Katılın</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="w-full h-screen relative z-10 pt-20 bg-dark-bg">
+        <div class="swiper heroSwiper w-full h-full">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide relative bg-[url('./bg.jpg?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center">
+                    <div class="absolute inset-0 bg-dark-bg/80"></div>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 max-w-5xl mx-auto" data-aos="fade-up" data-aos-duration="1000">
+                        <span class="px-4 py-1.5 rounded-full border border-brand-blue/30 bg-brand-blue/10 text-brand-blue font-semibold tracking-wider uppercase mb-6 text-xs backdrop-blur-sm">Amatör Telsizciliğe İlk Adım</span>
+                        <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+                            İletişimin Temelini <br/>Birlikte Öğreniyoruz
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-300 font-light max-w-2xl">
+                            Sınav hazırlığıdan ilk cihazınızı kurmaya kadar, amatör telsizcilik serüveninizde şeffaf ve anlaşılır bir rehberlik sunuyoruz.
+                        </p>
+                    </div>
+                </div>
+                <div class="swiper-slide relative bg-[url('./bg.jpg?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center">
+                    <div class="absolute inset-0 bg-dark-bg/80"></div>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 max-w-5xl mx-auto">
+                        <span class="px-4 py-1.5 rounded-full border border-brand-blue/30 bg-brand-blue/10 text-brand-blue font-semibold tracking-wider uppercase mb-6 text-xs backdrop-blur-sm">Teoriden Pratiğe</span>
+                        <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+                            Elektroniği ve Donanımı <br/>Keşfedin
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-300 font-light max-w-2xl">
+                            Hiçbir teknik bilginiz olmasa dahi, temel elektronik atölyelerimizle cihazların nasıl çalıştığını teorik/uygulamalı olarak gösteriyoruz.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-next hidden md:flex"></div>
+            <div class="swiper-button-prev hidden md:flex"></div>
+            <div class="swiper-pagination mb-6"></div>
+        </div>
+    </section>
+
+    <section id="hakkimizda" class="py-24 px-6 relative bg-light-bg dark:bg-dark-bg">
+        <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+            <h2 class="text-3xl md:text-4xl font-bold text-light-text dark:text-dark-text mb-6">Amacımız ve Vizyonumuz</h2>
+            <div class="w-20 h-1.5 bg-brand-blue mx-auto mb-10 rounded-full"></div>
+            
+            <p class="text-lg text-light-muted dark:text-dark-muted leading-relaxed mb-6">
+                Bizler, amatör telsizcilik kültürünü yaşatmak ve yeni nesillere en doğru şekilde aktarmak amacıyla bir araya gelmiş gönüllü bir eğitim topluluğuyuz. Temel hedefimiz; telsizciliğe ilgi duyan herkesi, hiçbir ön bilgi aramaksızın aramıza katmak ve onlara rehberlik etmektir.
+            </p>
+            <p class="text-lg text-light-muted dark:text-dark-muted leading-relaxed mb-6">
+                Yalnızca bir sınava hazırlık kursu değil, aynı zamanda dostluğun, bilgi paylaşımının ve topluma fayda sağlama bilincinin geliştiği şeffaf bir aileyiz. Eğitimin her aşamasında karmaşıklıktan uzak, net ve anlaşılır bir dil kullanmayı ilke ediniyoruz.
+            </p>
+            <p class="text-lg text-light-muted dark:text-dark-muted leading-relaxed">
+                Tamamen gönüllülük esasına dayanan bu platform, amatör telsizcilik camiasına katkı sağlamak amacıyla bağımsız ve ücretsiz bir kaynak olarak sunulmaktadır. Paylaştığımız tüm bilgi, doküman ve yazılımlar; telsizcilik hobisinin yaygınlaşmasını desteklemek ve adayların sınav süreçlerinde ihtiyaç duydukları kaynaklara özgürce ulaşabilmelerini sağlamak amacıyla, hiçbir maddi beklenti olmaksızın, tamamen topluluk dayanışmasıyla hazırlanmıştır.
+            </p>
+        </div>
+    </section>
+
+    <section id="faaliyetler" class="py-24 px-6 bg-brand-light/50 dark:bg-dark-card border-y border-light-border dark:border-dark-border">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-brand-blue font-bold tracking-wider uppercase text-sm block mb-2">Çalışma Alanlarımız</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-light-text dark:text-white">Neler Yapıyoruz?</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="group bg-light-card dark:bg-dark-bg p-10 rounded-2xl shadow-soft dark:shadow-dark hover:-translate-y-2 transition-transform duration-300 border border-light-border dark:border-dark-border" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-14 h-14 bg-brand-light dark:bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-book-open text-2xl text-brand-blue dark:text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-light-text dark:text-white mb-4">Lisans Sınavı Eğitimi</h3>
+                    <p class="text-light-muted dark:text-dark-muted leading-relaxed text-sm">Amatör telsizcilik belgesi almanız için gereken tüm yasal düzenlemeleri, yönetmelikleri, işletme esaslarını ve teknik kuralları şeffaf bir şekilde anlatıyor; sınav takibini de sizinle birlikte yapıyoruz.</p>
+                </div>
+
+                <div class="group bg-light-card dark:bg-dark-bg p-10 rounded-2xl shadow-soft dark:shadow-dark hover:-translate-y-2 transition-transform duration-300 border border-light-border dark:border-dark-border" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-14 h-14 bg-brand-light dark:bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-bolt text-2xl text-brand-blue dark:text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-light-text dark:text-white mb-4">Temel Elektronik Atölyesi</h3>
+                    <p class="text-light-muted dark:text-dark-muted leading-relaxed text-sm">Hiçbir tecrübeniz olmasa dahi Ohm kanunu, temel devre elemanları ve basit lehimleme tekniklerini öğreterek işin mutfağına girmenizi sağlıyoruz.</p>
+                </div>
+
+                <div class="group bg-light-card dark:bg-dark-bg p-10 rounded-2xl shadow-soft dark:shadow-dark hover:-translate-y-2 transition-transform duration-300 border border-light-border dark:border-dark-border" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-14 h-14 bg-brand-light dark:bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-tower-cell text-2xl text-brand-blue dark:text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-light-text dark:text-white mb-4">Cihaz ve Anten Kurulumu</h3>
+                    <p class="text-light-muted dark:text-dark-muted leading-relaxed text-sm">Uygun fiyatlı ilk el telsizinizi seçmekten, evinizde kolayca yapabileceğiniz ilk basit antene kadar her aşamada pratik ve ekonomik değerlendirmeler sunuyoruz.</p>
+                </div>
+
+                <div class="group bg-light-card dark:bg-dark-bg p-10 rounded-2xl shadow-soft dark:shadow-dark hover:-translate-y-2 transition-transform duration-300 border border-light-border dark:border-dark-border" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-14 h-14 bg-brand-light dark:bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-handshake-angle text-2xl text-brand-blue dark:text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-light-text dark:text-white mb-4">İlk Görüşme (QSO) Desteği</h3>
+                    <p class="text-light-muted dark:text-dark-muted leading-relaxed text-sm">Çağrı işaretinizle mikrofona ilk kez basmanın heyecanına ortak oluyor; fonetik alfabe ve standart telsiz iletişim kurallarıyla kusursuz bir başlangıç yapmanızı sağlıyoruz.</p>
+                </div>
+
+                <div class="group bg-light-card dark:bg-dark-bg p-10 rounded-2xl shadow-soft dark:shadow-dark hover:-translate-y-2 transition-transform duration-300 border border-light-border dark:border-dark-border" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-14 h-14 bg-brand-light dark:bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-satellite text-2xl text-brand-blue dark:text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-light-text dark:text-white mb-4">İleri Düzey Teknolojiler</h3>
+                    <p class="text-light-muted dark:text-dark-muted leading-relaxed text-sm">Temel adımları tamamlayan üyelerimizle birlikte, kısa dalga telsizlerden uydu haberleşmesine uzanan geniş bir yelpazede yeni nesil dijital teknolojilerin vizyonunu paylaşıyoruz.</p>
+                </div>
+
+                <div class="group bg-light-card dark:bg-dark-bg p-10 rounded-2xl shadow-soft dark:shadow-dark hover:-translate-y-2 transition-transform duration-300 border border-light-border dark:border-dark-border" data-aos="fade-up" data-aos-delay="600">
+                    <div class="w-14 h-14 bg-brand-light dark:bg-brand-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-users text-2xl text-brand-blue dark:text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-light-text dark:text-white mb-4">Saha ve Topluluk Etkinlikleri</h3>
+                    <p class="text-light-muted dark:text-dark-muted leading-relaxed text-sm">Açık havada anten testleri, doğa yürüyüşlerinde haberleşme pratikleri ve yüz yüze teknik buluşmalarla bağlarımızı güçlendiriyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="surec" class="py-24 px-6 bg-light-bg dark:bg-dark-bg">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-light-text dark:text-white mb-4">Sınavdan Tekniğe Geçiş Süreci</h2>
+                <p class="text-light-muted dark:text-dark-muted">Amatör telsizci olmanız için gereken şeffaf ve sıralı adımlar.</p>
+            </div>
+            
+            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-6 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 timeline-line">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full border-4 border-light-bg dark:border-dark-bg bg-brand-blue text-white font-bold text-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg z-10">1</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-light-card dark:bg-dark-card p-8 rounded-2xl border border-light-border dark:border-dark-border shadow-soft dark:shadow-none hover:shadow-md transition-shadow">
+                        <h4 class="text-xl font-bold text-light-text dark:text-white mb-3 flex items-center gap-3">
+                            <i class="fas fa-graduation-cap text-brand-blue"></i> Eğitim ve Hazırlık
+                        </h4>
+                        <p class="text-light-muted dark:text-dark-muted text-sm leading-relaxed">KEGM'nin düzenlediği amatör telsizcilik sınavına yönelik tüm eğitim materyallerini sıfırdan, anlaşılır ve uygulanabilir bir şekilde ele alıyoruz.</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full border-4 border-light-bg dark:border-dark-bg bg-brand-blue text-white font-bold text-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg z-10">2</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-light-card dark:bg-dark-card p-8 rounded-2xl border border-light-border dark:border-dark-border shadow-soft dark:shadow-none hover:shadow-md transition-shadow">
+                        <h4 class="text-xl font-bold text-light-text dark:text-white mb-3 flex items-center gap-3">
+                            <i class="fas fa-id-card text-brand-blue"></i> Sınav ve Çağrı İşareti
+                        </h4>
+                        <p class="text-light-muted dark:text-dark-muted text-sm leading-relaxed">Sınavı kazandığınızda, e-Devlet üzerinden size özel çağrı işaretinizin tahsisi için adım adım rehberlik ediyor; her aşamada yanınızda oluyoruz.</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full border-4 border-light-bg dark:border-dark-bg bg-brand-blue text-white font-bold text-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-lg z-10">3</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-light-card dark:bg-dark-card p-8 rounded-2xl border border-light-border dark:border-dark-border shadow-soft dark:shadow-none hover:shadow-md transition-shadow">
+                        <h4 class="text-xl font-bold text-light-text dark:text-white mb-3 flex items-center gap-3">
+                            <i class="fas fa-walkie-talkie text-brand-blue"></i> Cihaz Temini ve İlk QSO
+                        </h4>
+                        <p class="text-light-muted dark:text-dark-muted text-sm leading-relaxed">Yüksek bütçeler ayırmadan, topluluğun tavsiyesiyle seçtiğiniz ilk telsizle frekanslara merhaba diyor; ilk haberleşme deneyiminizi kazanıyorsunuz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="galeri" class="py-24 px-6 bg-brand-light/50 dark:bg-dark-card border-y border-light-border dark:border-dark-border">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="text-brand-blue font-bold tracking-wider uppercase text-sm block mb-2">Topluluk Günlüğümüz</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-light-text dark:text-white">Fotoğraf Galerisi</h2>
+                <p class="text-light-muted dark:text-dark-muted mt-4">Saha çalışmalarımız, eğitimlerimiz ve atölyelerimizden kareler.</p>
+            </div>
+            
+            <div class="relative w-full" data-aos="fade-up" data-aos-delay="100">
+                <div class="swiper gallery-slider rounded-2xl shadow-soft dark:shadow-dark overflow-hidden mb-4 aspect-[16/9] md:aspect-[21/9]">
+                    <div class="swiper-wrapper">
+                        
+                        <div class="swiper-slide relative">
+                            <img src="./image3.jpeg?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 md:p-10">
+                                <h3 class="text-white font-bold text-2xl md:text-3xl mb-2">Ataköy 2-5-6. Kısım Muhtarlığı Buluşması</h3>
+                                <p class="text-gray-300 text-sm md:text-base">16 Mayıs 2026 tarihinde, Ataköy 2-5-6. Kısım Muhtarlığı’nda bir araya gelerek telsizcilik tutkumuzu paylaştık. Cihazlarımızı kurup sahadaki performanslarını test ederken, birbirimize teknik ipuçları verdiğimiz, oldukça verimli ve keyifli bir çalışma günü geçirdik.</p>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide relative">
+                            <img src="./image2.jpeg?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 md:p-10">
+                                <h3 class="text-white font-bold text-2xl md:text-3xl mb-2">Ataköy 2-5-6. Kısım Muhtarlığı Buluşması</h3>
+                                <p class="text-gray-300 text-sm md:text-base">Etkinliğin devamında ise çaylarımızı yudumlayıp frekanslar, dijital modlar ve yeni projelerimiz üzerine koyu bir teknik sohbete daldık. Ekipçe hem cihazlarımızı test ettiğimiz hem de harika vakit geçirdiğimiz çok güzel bir gün oldu.</p>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide relative">
+                            <img src="./image4.jpeg?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 md:p-10">
+                                <h3 class="text-white font-bold text-2xl md:text-3xl mb-2">Kıyı Emniyeti Genel Müdürlüğü Telsizcilik Sınavı Buluşması</h3>
+                                <p class="text-gray-300 text-sm md:text-base">9 Nisan 2026 tarihinde, Kıyı Emniyeti Genel Müdürlüğü tarafından düzenlenen sınavda ter döken arkadaşlarımıza moral ve motivasyon desteği vermek için oradaydık. Sınav heyecanını paylaşmanın yanı sıra, daha önce sadece dijital platformlardan tanıdığımız ve yüz yüze görüşme fırsatı bulamadığımız yeni ekip arkadaşlarımızla ilk kez bir araya gelmenin mutluluğunu yaşadık.</p>
+                            </div>
+                        </div>
+
+                        <div class="swiper-slide relative">
+                            <img src="./image5.jpeg?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6 md:p-10">
+                                <h3 class="text-white font-bold text-2xl md:text-3xl mb-2">Kıyı Emniyeti Genel Müdürlüğü Telsizcilik Sınavı Buluşması</h3>
+                                <p class="text-gray-300 text-sm md:text-base">Sınav stresi ve heyecanının yerini kısa sürede keyifli sohbetlere bıraktığı, birbirimizi daha yakından tanıdığımız oldukça samimi ve güzel bir gün geçirdik. Aramıza katılan yeni dostlarımızla bağımızı güçlendirdiğimiz, hem motive edici hem de oldukça verimli bir gün oldu.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="swiper-button-next gallery-next"></div>
+                    <div class="swiper-button-prev gallery-prev"></div>
+                </div>
+
+                <div class="swiper gallery-thumbs h-20 md:h-28 rounded-xl overflow-hidden">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide rounded-xl overflow-hidden"><img src="./image3.jpeg?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover"></div>
+                        <div class="swiper-slide rounded-xl overflow-hidden"><img src="./image2.jpeg?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover"></div>
+                        <div class="swiper-slide rounded-xl overflow-hidden"><img src="./image4.jpeg?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover"></div>
+                        <div class="swiper-slide rounded-xl overflow-hidden"><img src="./image5.jpeg?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="sss" class="py-24 px-6 bg-light-bg dark:bg-dark-bg">
+        <div class="max-w-3xl mx-auto" data-aos="fade-up">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-light-text dark:text-white mb-12">Sıkça Sorulan Sorular</h2>
+            <div class="space-y-4">
+                <details class="bg-light-card dark:bg-dark-card group rounded-xl shadow-sm border border-light-border dark:border-dark-border cursor-pointer [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 font-semibold text-light-text dark:text-white">
+                        <div class="flex items-center gap-3"><i class="fas fa-circle-question text-brand-blue"></i> Bu konular hakkında hiç bilgim yok, aranıza katılabilir miyim?</div>
+                        <span class="w-8 h-8 rounded-full bg-brand-light dark:bg-brand-dark flex items-center justify-center group-open:bg-brand-blue transition-colors">
+                            <i class="fas fa-chevron-down transition-transform duration-300 group-open:-rotate-180 text-brand-blue dark:text-blue-400 group-open:text-white"></i>
+                        </span>
+                    </summary>
+                    <div class="p-6 pt-0 text-light-muted dark:text-dark-muted text-sm leading-relaxed border-t border-light-border dark:border-dark-border mt-2">
+                        Kesinlikle! Topluluğumuzun kuruluş amacı zaten budur. Telsizciliğe ve elektroniğe sıfırdan başlayan bireyleri kucaklıyor, her konuyu en temel seviyeden başlayarak şeffaf bir şekilde anlatıyoruz. Hiçbir ön bilgiye ihtiyacınız yok.
+                    </div>
+                </details>
+
+                <details class="bg-light-card dark:bg-dark-card group rounded-xl shadow-sm border border-light-border dark:border-dark-border cursor-pointer [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 font-semibold text-light-text dark:text-white">
+                        <div class="flex items-center gap-3"><i class="fas fa-calendar-check text-brand-blue"></i> Sınavlar ne zaman ve nerede yapılıyor?</div>
+                        <span class="w-8 h-8 rounded-full bg-brand-light dark:bg-brand-dark flex items-center justify-center group-open:bg-brand-blue transition-colors">
+                            <i class="fas fa-chevron-down transition-transform duration-300 group-open:-rotate-180 text-brand-blue dark:text-blue-400 group-open:text-white"></i>
+                        </span>
+                    </summary>
+                    <div class="p-6 pt-0 text-light-muted dark:text-dark-muted text-sm leading-relaxed border-t border-light-border dark:border-dark-border mt-2">
+                        Amatör Telsizcilik sınavları, Kıyı Emniyeti Genel Müdürlüğü (KEGM) tarafından yılda iki kez yazılı olarak düzenlenmektedir. Bunun yanı sıra, Milli Eğitim Bakanlığı (MEB) tarafından belirlenen sınav merkezlerinin uygunluğuna bağlı olarak, sınavlar elektronik sınav (e-sınav) yöntemiyle de gerçekleştirilebilmektedir.
+                    </div>
+                </details>
+
+                <details class="bg-light-card dark:bg-dark-card group rounded-xl shadow-sm border border-light-border dark:border-dark-border cursor-pointer [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 font-semibold text-light-text dark:text-white">
+                        <div class="flex items-center gap-3"><i class="fas fa-wallet text-brand-blue"></i> Telsiz ekipmanı almak pahalı bir süreç mi?</div>
+                        <span class="w-8 h-8 rounded-full bg-brand-light dark:bg-brand-dark flex items-center justify-center group-open:bg-brand-blue transition-colors">
+                            <i class="fas fa-chevron-down transition-transform duration-300 group-open:-rotate-180 text-brand-blue dark:text-blue-400 group-open:text-white"></i>
+                        </span>
+                    </summary>
+                    <div class="p-6 pt-0 text-light-muted dark:text-dark-muted text-sm leading-relaxed border-t border-light-border dark:border-dark-border mt-2">
+                     Amatör telsizcilikle ilgilenmeye başlamak, genellikle yüksek maliyetli bir hobi olduğu düşüncesiyle çekinilen bir süreçtir; ancak gerçekte oldukça ekonomiktir. Başlangıç seviyesinde, piyasada kolayca bulunabilen uygun fiyatlı analog el telsizleri ile dünyayı dinlemeye, yerel röleler üzerinden diğer amatör telsizcilerle bağlantı kurmaya ve bu hobinin temellerini öğrenmeye hemen başlayabilirsiniz.
+                     <br>
+                     İleri seviye donanımlara veya karmaşık sistemlere geçmeden önce, bütçenizi zorlamadan bu hobinin heyecanını yaşayabilir; temel teknik bilgiyi edindikçe sisteminizi adım adım geliştirebilirsiniz.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark-bg pt-16 pb-8 border-t-4 border-brand-blue mt-auto">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 text-center md:text-left">
+                <div>
+                    <div class="flex items-center gap-3 justify-center md:justify-start mb-6 text-white">
+                        <i class="fas fa-tower-broadcast text-2xl text-brand-blue"></i>
+                        <span class="font-bold text-2xl tracking-tight">AT<span class="text-brand-blue">EG</span></span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Amatör telsizcilik kültürünü; etik değerler ve sorumluluk bilinci çerçevesinde yaygınlaştıran, amatörleri eğiten ve teknik gelişimi destekleyen şeffaf bir topluluk.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Hızlı Bağlantılar</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="#hakkimizda" class="hover:text-white transition-colors">Hakkımızda</a></li>
+                        <li><a href="#faaliyetler" class="hover:text-white transition-colors">Faaliyet Alanlarımız</a></li>
+                        <li><a href="#surec" class="hover:text-white transition-colors">Eğitim Süreci</a></li>
+                        <li><a href="#galeri" class="hover:text-white transition-colors">Fotoğraf Galerisi</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Bize Ulaşın</h4>
+                    <p class="text-gray-400 text-sm mb-4">Topluluğumuza katılmak ve sorularınızı iletmek için sosyal medya hesabımızdan mesaj gönderebilirsiniz.</p>
+                    <a href="https://instagram.com/ateg_egitim" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 text-white font-medium hover:bg-brand-blue transition-colors">
+                        <i class="fab fa-instagram text-xl"></i>
+                        <span>Instagram'dan Ulaşın</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+                <p>&copy; 2026 Amatör Telsiz Eğitim Topluluğu. Tüm hakları saklıdır.</p>
+                <div class="flex items-center gap-2">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    <span>73</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-brand-blue text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center opacity-0 invisible transition-all duration-300 hover:bg-brand-hover z-50 translate-y-5">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // AOS Animasyonları
+        AOS.init({ once: true, offset: 50, duration: 800, easing: 'ease-out-cubic' });
+        
+        // Üst Kısım Hero Slider
+        var heroSwiper = new Swiper(".heroSwiper", {
+            effect: "fade", 
+            fadeEffect: { crossFade: true },
+            loop: true,
+            autoplay: { delay: 6000, disableOnInteraction: false },
+            pagination: { el: ".swiper-pagination", clickable: true },
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
+        });
+
+        // BÜYÜK FOTOĞRAF GALERİSİ İÇİN SWIPER (Thumbnail entegrasyonlu)
+        var galleryThumbs = new Swiper(".gallery-thumbs", {
+            spaceBetween: 16,
+            slidesPerView: 4,
+            freeMode: true,
+            watchSlidesProgress: true,
+            breakpoints: {
+                320: { slidesPerView: 3, spaceBetween: 10 },
+                768: { slidesPerView: 4, spaceBetween: 16 }
+            }
+        });
+        
+        var gallerySlider = new Swiper(".gallery-slider", {
+            spaceBetween: 10,
+            effect: "fade",
+            fadeEffect: { crossFade: true },
+            autoplay: { delay: 4000, disableOnInteraction: false },
+            navigation: {
+                nextEl: ".gallery-next",
+                prevEl: ".gallery-prev",
+            },
+            thumbs: {
+                swiper: galleryThumbs,
+            },
+        });
+
+        // Şeffaf Navbar ve Scroll Progress Efekti
+        const navbar = document.getElementById('navbar');
+        const progressBar = document.getElementById('progress-bar');
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            
+            progressBar.style.width = scrolled + '%';
+
+            if (winScroll > 20) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-2');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.remove('py-2');
+                navbar.classList.add('py-4');
+            }
+
+            if (winScroll > 500) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible', 'translate-y-5');
+                backToTopBtn.classList.add('opacity-100', 'visible', 'translate-y-0');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'invisible', 'translate-y-5');
+                backToTopBtn.classList.remove('opacity-100', 'visible', 'translate-y-0');
+            }
+        });
+
+        // Başa Dön
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Dark/Light Mode Geçiş
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (localStorage.getItem('color-theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            darkIcon.classList.remove('hidden');
+        } else {
+            lightIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>
